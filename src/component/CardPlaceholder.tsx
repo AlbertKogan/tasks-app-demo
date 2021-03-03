@@ -1,10 +1,12 @@
-import { Fragment } from "react";
+import { useCallback, useState } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import BoardCard from "./BoardCard";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
+
+import { useDrop } from "react-dnd";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,12 +26,33 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function CardPlaceholder() {
   const classes = useStyles();
 
+  const [cards, setCards] = useState([1,2]);
+  const handleDrop = useCallback(
+    (item) => {
+      setCards([...cards, item.id])
+    },
+    [],
+  )
+
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: "card",
+      drop: (item) => handleDrop(item),
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }),
+    []
+  );
+
+  const isActive = isOver && canDrop;
+
   return (
-    <Grid item className={classes.cardPlaceholder}>
-      <Fragment>
-        <BoardCard />
-        <BoardCard />
-      </Fragment>
+    <Grid item className={classes.cardPlaceholder} ref={drop} style={{ backgroundColor: isActive ? 'red' : 'white' }}>
+      <Grid>
+          { cards.map((item) => <BoardCard key={ item } />)}
+      </Grid>
 
       <Box>
         <Button variant="contained" color="secondary" startIcon={<AddIcon />}>

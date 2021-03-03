@@ -7,6 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
+import { useDrag } from "react-dnd";
+
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -28,8 +30,19 @@ export default function BoardCard() {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
+  const [{ opacity }, dragRef] = useDrag(
+    () => ({
+      // TODO: Provide unique ID
+      item: { type: "card", id: 5 },
+      collect: (monitor) => ({
+        opacity: monitor.isDragging() ? 0.5 : 1,
+      }),
+    }),
+    []
+  );
+
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} ref={dragRef} style={{ opacity }}>
       <CardContent>
         <Typography
           className={classes.title}
