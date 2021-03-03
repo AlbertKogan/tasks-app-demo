@@ -1,18 +1,38 @@
-import { Fragment } from 'react';
-
+import { Fragment } from "react";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-function App() {
+
+import Board from "./component/Board";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    wrapper: {
+      backgroundColor: theme.palette.grey[100]
+    }
+  })
+);
+
+export default function App() {
+  const classes = useStyles();
+
   return (
     <Fragment>
       <CssBaseline />
-      <Typography component="div"
-                  style={{ backgroundColor: '#cfe8fc', height: '100vh' }}>
-        Initial Template
-      </Typography>
+       <AppBar position="static">
+        <Toolbar variant="dense">
+          <Typography variant="h6" color="inherit">
+            Kanban boards
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container className={ classes.wrapper }>
+        <Board />
+      </Container>
     </Fragment>
   );
 }
-
-export default App;
