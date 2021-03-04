@@ -1,11 +1,13 @@
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+import { useContext } from 'react';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import BoardHeader from "./BoardHeader";
-import CardPlaceholder from "./CardPlaceholder";
+import CardPlaceholder from './CardPlaceholder';
+import { DataContext } from './../App';
+import { Status, StorageContext } from '../interfaces';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,20 +23,21 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Board() {
   const classes = useStyles();
+  const data = useContext(DataContext) as StorageContext;
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Grid container className={classes.root} spacing={2}>
-        <BoardHeader />
-        <Grid item xs={12}>
-          <Grid container justify="space-between" spacing={2}>
-            {[0, 1, 2, 3].map((value) => (
-              <Grid key={value} item>
-                <CardPlaceholder/>
-              </Grid>
-            ))}
+      <Grid
+        container
+        justify="space-between"
+        className={classes.root}
+        spacing={2}
+      >
+        {data.statuses.map((status: Status) => (
+          <Grid key={status.id} item xs={3}>
+            <CardPlaceholder status={status.id} key={status.id} />
           </Grid>
-        </Grid>
+        ))}
       </Grid>
     </DndProvider>
   );
