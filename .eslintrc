@@ -1,5 +1,5 @@
 {
-  "plugins": ["prettier", "@typescript-eslint"],
+  "plugins": ["prettier", "@typescript-eslint", "react"],
   "extends": ["react-app", "prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

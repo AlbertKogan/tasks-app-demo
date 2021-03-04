@@ -14,6 +14,8 @@ export interface Task {
 
 export interface Board {
   id: string;
+  displayName: string;
+  isActive: boolean;
 }
 
 export interface Observer {

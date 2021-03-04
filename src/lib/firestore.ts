@@ -30,27 +30,29 @@ async function getStatusData() {
   return statusesData;
 }
 
-async function getBoardData() {
-  const activeBoard = await store
-    .collection('boards')
-    .where('isActive', '==', true)
-    .get();
+async function getBoardsData() {
+  const boards = await store.collection('boards').get();
   const boardsData: Board[] = [];
 
-  activeBoard.forEach((doc) => boardsData.push({ id: doc.id }));
-  return boardsData[0];
+  boards.forEach((doc) =>
+    boardsData.push({ id: doc.id, ...doc.data() } as Board)
+  );
+  return boardsData;
 }
 
 export async function getData(): Promise<{
   statusesData: Status[];
-  boardData: Board;
+  boardsData: Board[];
+  activeBoard: Board;
 }> {
   const statusesData = await getStatusData();
-  const boardData = await getBoardData();
+  const boardsData = await getBoardsData();
+  const activeBoard = boardsData.find((board) => board.isActive)!;
 
   return {
     statusesData,
-    boardData,
+    boardsData,
+    activeBoard,
   };
 }
 
