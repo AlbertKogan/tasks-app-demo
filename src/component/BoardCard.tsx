@@ -7,6 +7,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { useDrag } from 'react-dnd';
@@ -19,13 +21,16 @@ import { Task, Status, StorageContext } from '../interfaces';
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
-  },
-  title: {
-    fontSize: 14,
+    marginBottom: 10
   },
   pos: {
     marginBottom: 12,
   },
+  cardActions: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  }
 });
 
 export default function BoardCard({
@@ -66,44 +71,50 @@ export default function BoardCard({
     <Card className={classes.root} ref={dragRef} style={{ opacity }}>
       <CardContent>
         <Typography
-          className={classes.title}
-          color="textSecondary"
+          variant="h5" 
+          component="h5"
           gutterBottom
         >
           {data.title}
         </Typography>
-        <Typography variant="body2" component="p">
+        <Typography variant="body2" component="p" color="textSecondary">
           {data.description}
         </Typography>
       </CardContent>
-      <CardActions>
-        {currentStatus!.order > statusOrderMin && (
-          <Button
-            size="small"
-            onClick={() =>
-              updateTask(dataGlobal.activeBoard.id, data.id, {
-                status: statusByOrder[currentStatus!.order - 1].id,
-              })
-            }
-          >
-            Move left
-          </Button>
-        )}
-        {currentStatus!.order < statusOrderMax && (
-          <Button
-            size="small"
-            onClick={() =>
-              updateTask(dataGlobal.activeBoard.id, data.id, {
-                status: statusByOrder[currentStatus!.order + 1].id,
-              })
-            }
-          >
-            Move right
-          </Button>
-        )}
+      <CardActions className={classes.cardActions}>
+        <div>
+          {currentStatus!.order > statusOrderMin && (
+            <IconButton
+              size="small"
+              color="secondary"
+              onClick={() =>
+                updateTask(dataGlobal.activeBoard.id, data.id, {
+                  status: statusByOrder[currentStatus!.order - 1].id,
+                })
+              }
+            >
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+          )}
+          {currentStatus!.order < statusOrderMax && (
+            <IconButton
+              size="small"
+              color="secondary"
+              onClick={() =>
+                updateTask(dataGlobal.activeBoard.id, data.id, {
+                  status: statusByOrder[currentStatus!.order + 1].id,
+                })
+              }
+            >
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          )}
+        </div>
 
         <IconButton
           size="small"
+          variant="text"
+          color="primary"
           onClick={() => deleteTask(dataGlobal.activeBoard.id, data.id)}
         >
           <DeleteIcon />

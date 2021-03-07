@@ -5,9 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
 
 import { useDebounce } from '@react-hook/debounce';
 
@@ -62,8 +60,8 @@ export default function BoardCardDraft({
   const dataGlobal: any = useContext(DataContext);
   const [
     addNewTaskHandler,
-    titleHandler,
     descriptionHandler,
+    titleHandler,
   ] = useCardForm(() => setIsDraft(false));
 
   return (
@@ -88,13 +86,14 @@ export default function BoardCardDraft({
             />
           </Box>
         </CardContent>
+        
         <CardActions>
-          <IconButton size="small" type="submit">
-            <AddIcon />
-          </IconButton>
-          <IconButton size="small" onClick={() => setIsDraft(false)}>
-            <DeleteIcon />
-          </IconButton>
+          <Button size="small" type="submit" variant="contained" color="secondary">
+             Create
+          </Button>
+          <Button size="small" onClick={() => setIsDraft(false)}>
+            Discard
+          </Button>
         </CardActions>
       </form>
     </Card>
