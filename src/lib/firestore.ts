@@ -2,17 +2,44 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { Observer, Status, Board, Task } from '../interfaces';
 
-if (!firebase.apps.length) {
-  firebase.initializeApp({
-    apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_PROJECT_ID,
-  });
-} else {
-  firebase.app(process.env.APP_ID);
+const FIREBASE_CONFIG = {
+  apiKey: process.env.REACT_APP_API_KEY,
+  appId: process.env.REACT_APP_APP_ID,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
 }
+const APP_NAME = 'KANBAN_APP';
 
-const store = firebase.firestore();
+let store: firebase.firestore.Firestore;
+let app: firebase.app.App;
+
+if (!firebase.apps.length) {
+  app = firebase.initializeApp(FIREBASE_CONFIG, APP_NAME);
+  store = app.firestore();
+  if (process.env.NODE_ENV === 'development') {
+    // populate local firestore 
+    store.useEmulator("localhost", 5002);
+
+    getBoardsData().then((data) => {
+      if (!data.length) {
+        const statuses = [
+          { id: 'candidates', displayName: 'Candidates', order: 0 },
+          { id: 'progress', displayName: 'In Progress', order: 1 },
+          { id: 'qa', displayName: 'QA', order: 2 },
+          { id: 'completed', displayName: 'Completed', order: 3 },
+        ];
+    
+        const board = { displayName: 'R&D', isActive: true, taskCount: 0 };
+        
+        store.collection('/boards').doc('rnd').set(board);
+        statuses.map((status) => store.collection('/statuses').doc(status.id).set(status));
+      }
+    });
+  }
+} else {
+  app =firebase.app(APP_NAME);
+  store = app.firestore();
+} 
 
 async function getStatusData() {
   const statusesResponse = await store
@@ -128,6 +155,13 @@ export const streamTasks = (boardId: string, observer: Observer) => {
     .collection('boards')
     .doc(boardId)
     .collection('tasks')
+    .onSnapshot(observer);
+};
+
+export const streamBoardCount = (boardId: string, observer: Observer) => {
+  return store
+    .collection('boards')
+    .doc(boardId)
     .onSnapshot(observer);
 };
 
