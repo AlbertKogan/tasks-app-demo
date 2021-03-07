@@ -1,7 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
+import clsx from 'clsx';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import BoardCard from './BoardCard';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -23,8 +22,26 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 100,
     },
     cardPlaceholder: {
-      backgroundColor: theme.palette.grey[300],
+      background: 'transparent',
     },
+    cardPlaceholderActive: {
+      background: theme.palette.grey[100],
+    },
+    cardPlaceholderHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 10,
+    },
+    cardPlaceholderBottom: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 10,
+    },
+    cardPlaceholderContent: {
+      padding: 10,
+    }
   })
 );
 
@@ -48,7 +65,7 @@ export default function CardPlaceholder({ status }: CardPlaceholderProps) {
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: 'card',
-      drop: (item) => handleDrop(item),
+      drop: handleDrop,
       collect: (monitor) => ({
         isOver: monitor.isOver(),
         canDrop: monitor.canDrop(),
@@ -65,37 +82,39 @@ export default function CardPlaceholder({ status }: CardPlaceholderProps) {
   const statusData = data.statuses.find((s: any) => s.id === status);
 
   return (
-    <Grid
-      item
-      className={classes.cardPlaceholder}
+    <div
+      className={ 
+        clsx(
+          classes.cardPlaceholder, 
+          isActive && classes.cardPlaceholderActive
+        ) 
+      }
       ref={drop}
-      style={{ backgroundColor: isActive ? 'red' : 'white' }}
     >
-      <Grid key={statusData.id} item>
-        <Box>
-          <Typography>{statusData.displayName}</Typography>
-          <IconButton size="small" onClick={() => setIsDraft(true)}>
-            <AddIcon />
-          </IconButton>
-        </Box>
-      </Grid>
+      <div key={statusData.id} className={classes.cardPlaceholderHeader}>
+        <Typography>{statusData.displayName}</Typography>
+        <IconButton size="small" onClick={() => setIsDraft(true)}>
+          <AddIcon />
+        </IconButton>
+      </div>
 
-      <Grid>
+      <div className={classes.cardPlaceholderContent}>
         {cardsByStatus.map((card: any) => (
           <BoardCard key={card.id} data={card} setIsDraft={setIsDraft} />
         ))}
-      </Grid>
+      </div>
 
-      <Box>
+      <div className={classes.cardPlaceholderBottom}>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="text"
+          size="small"
+          color="primary"
           startIcon={<AddIcon />}
           onClick={() => setIsDraft(true)}
         >
-          Add new card
+          Add new task
         </Button>
-      </Box>
-    </Grid>
+      </div>
+    </div>
   );
 }
