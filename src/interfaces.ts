@@ -16,6 +16,7 @@ export interface Board {
   id: string;
   displayName: string;
   isActive: boolean;
+  taskCount: number;
 }
 
 export interface Observer {

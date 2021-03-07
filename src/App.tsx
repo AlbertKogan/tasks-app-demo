@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Board from "./component/Board";
 
-import { getData, streamTasks } from "./lib/firestore";
+import { getData, streamTasks, streamBoardCount } from "./lib/firestore";
 import { StorageContext, Status, Task, Board as BoardInterface } from "./interfaces";
 import { FormControl, Select, MenuItem } from "@material-ui/core";
 
@@ -32,7 +32,7 @@ export default function App() {
   const classes = useStyles();
   const [statuses, setStatuses] = useState([] as Status[]);
   const [tasks, setTasks] = useState([] as Task[]);
-  const [activeBoard, setActiveBoard] = useState({ id: '' , displayName: '', isActive: false });
+  const [activeBoard, setActiveBoard] = useState({ id: '' , displayName: '', isActive: false, taskCount: 0 });
   const [boards, setBoards] = useState([] as BoardInterface[]);
 
   // Get data once
@@ -60,6 +60,22 @@ export default function App() {
     }
   }, [activeBoard.id]);
 
+  useEffect(() => {
+    if (activeBoard.id) {
+      const unsubscribe = streamBoardCount(activeBoard.id, {
+        next: (querySnapshot: any) => {
+          setActiveBoard({
+            id: querySnapshot.id,
+            ...querySnapshot.data()
+          });
+        },
+        error: () => console.log("Failed to get board"),
+      });
+  
+      return unsubscribe;
+    }
+  }, [activeBoard.id]);
+
   const Storage: StorageContext = {
     statuses,
     tasks,
@@ -75,9 +91,9 @@ export default function App() {
             <Typography variant="h6" color="inherit">
               Kanban boards
             </Typography>
-            <FormControl class={classes.formControl} variant="filled">
+            <FormControl className={classes.formControl} variant="filled">
               <Select
-                class={classes.select}
+                className={classes.select}
                 value={activeBoard.id}
                 renderValue={ () => activeBoard.displayName }
                 onChange={
@@ -98,6 +114,9 @@ export default function App() {
                 }
               </Select>
             </FormControl>
+            <Typography>
+              Total tasks: { activeBoard.taskCount || 0 }
+            </Typography>
           </Toolbar>
         </AppBar>
         <Container className={classes.wrapper}>
