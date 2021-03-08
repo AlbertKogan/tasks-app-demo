@@ -5,7 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Board from "./component/Board";
 import Header from "./component/Header";
 
-import { getData, streamTasks, streamBoardCount } from "./lib/firestore";
+import appStore from "./Store";
 import { StorageContext, Status, Task, Board as BoardInterface } from "./interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,12 +32,14 @@ export default function App() {
   const classes = useStyles();
   const [statuses, setStatuses] = useState([] as Status[]);
   const [tasks, setTasks] = useState([] as Task[]);
-  const [activeBoard, setActiveBoard] = useState({ id: '' , displayName: '', isActive: false, taskCount: 0 });
+  const [activeBoard, setActiveBoard] = useState(
+    { id: 'rnd' , displayName: 'R&D', isActive: true, taskCount: 0 }
+  );
   const [boards, setBoards] = useState([] as BoardInterface[]);
 
   // Get data once
   useEffect(() => {
-    getData().then(({ statusesData, boardsData, activeBoard }) => {
+    appStore.getData().then(({ statusesData, boardsData, activeBoard }) => {
       setStatuses(statusesData);
       setBoards(boardsData);
       setActiveBoard(activeBoard);
@@ -46,7 +48,7 @@ export default function App() {
 
   useEffect(() => {
     if (activeBoard.id) {
-      const unsubscribe = streamTasks(activeBoard.id, {
+      const unsubscribe = appStore.streamTasks(activeBoard.id, {
         next: (querySnapshot: any) => {
           const tasks = querySnapshot.docs.map(
             (docSnapshot: any) => ({ id: docSnapshot.id, ...docSnapshot.data() })
@@ -62,7 +64,7 @@ export default function App() {
 
   useEffect(() => {
     if (activeBoard.id) {
-      const unsubscribe = streamBoardCount(activeBoard.id, {
+      const unsubscribe = appStore.streamBoardCount(activeBoard.id, {
         next: (querySnapshot: any) => {
           setActiveBoard({
             id: querySnapshot.id,
@@ -89,7 +91,7 @@ export default function App() {
         <Header boards={boards} 
                 activeBoard={activeBoard}
                 setActiveBoard={setActiveBoard} />
-        <Container className={classes.wrapper}>
+        <Container data-testid='MainContiner' className={classes.wrapper}>
           <Board />
         </Container>
       </Fragment>

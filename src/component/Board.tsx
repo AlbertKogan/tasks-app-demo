@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
@@ -28,6 +28,7 @@ export default function Board() {
   return (
     <DndProvider backend={HTML5Backend}>
       <Grid
+        data-testid="BoardContent"
         container
         justify="space-between"
         className={classes.root}

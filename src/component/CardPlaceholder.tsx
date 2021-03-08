@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import BoardCard from './BoardCard';
@@ -8,7 +8,7 @@ import { Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 
 import { DataContext } from './../App';
-import { updateTask } from './../lib/firestore';
+import appStore from './../Store';
 
 import { useDrop } from 'react-dnd';
 
@@ -57,7 +57,8 @@ export default function CardPlaceholder({ status }: CardPlaceholderProps) {
 
   const handleDrop = useCallback(
     (item) => {
-      updateTask(data.activeBoard.id, item.data.id, { status });
+      console.info('Handle drop event for', data.activeBoard.id, item.data.id, status);
+      appStore.updateTask(data.activeBoard.id, item.data.id, { status });
     },
     [data.activeBoard.id, status]
   );
@@ -104,7 +105,7 @@ export default function CardPlaceholder({ status }: CardPlaceholderProps) {
         ))}
       </div>
 
-      <div className={classes.cardPlaceholderBottom}>
+      <div className={classes.cardPlaceholderBottom} data-testid="AddNewTaskButton">
         <Button
           variant="text"
           size="small"
