@@ -4,6 +4,8 @@ This kanban board for DoIT home assignment was bootstrapped with [Create React A
 
 ## To start project locally
 
+- install dependencies: `yarn install`
+- istall dependencies for functions `yarn install-function-deps`
 - create `.env` file with folowing values
 ```
 REACT_APP_API_KEY=<app key>

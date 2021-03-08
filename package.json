@@ -33,7 +33,8 @@
     "format": "eslint src/**/*.ts{,x} --fix",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "start-functions": "cd functions && npm run start",
-    "start-emulator": "firebase emulators:start"
+    "start-emulator": "firebase emulators:start",
+    "install-function-deps": "cd functions && npm i"
   },
   "browserslist": {
     "production": [
