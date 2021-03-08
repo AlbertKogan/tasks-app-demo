@@ -1,4 +1,4 @@
-import { useContext, FormEvent, ChangeEvent } from 'react';
+import React, { useContext, FormEvent, ChangeEvent } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import TextField from '@material-ui/core/TextField';
@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import { useDebounce } from '@react-hook/debounce';
 
 import { DataContext } from './../App';
-import { addNewTask } from './../lib/firestore';
+import appStore from './../Store';
 
 const useStyles = makeStyles({
   root: {
@@ -34,7 +34,7 @@ const useCardForm = (outerHandler: () => void): any => {
     event.preventDefault();
 
     outerHandler();
-    addNewTask(boardId, {
+    appStore.addNewTask(boardId, {
       title,
       description,
       status,
@@ -65,7 +65,7 @@ export default function BoardCardDraft({
   ] = useCardForm(() => setIsDraft(false));
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} data-testid="CardWrapper">
       <form
         className={classes.root}
         noValidate
@@ -91,7 +91,7 @@ export default function BoardCardDraft({
           <Button size="small" type="submit" variant="contained" color="secondary">
              Create
           </Button>
-          <Button size="small" onClick={() => setIsDraft(false)}>
+          <Button data-testid="DiscardButton" size="small" onClick={() => setIsDraft(false)}>
             Discard
           </Button>
         </CardActions>

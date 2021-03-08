@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
@@ -14,7 +13,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { useDrag } from 'react-dnd';
 
 import BoardCardDraft from './BoardCardDraft';
-import { deleteTask, updateTask } from '../lib/firestore';
+import appStore from '../Store';
 import { DataContext } from '../App';
 import { Task, Status, StorageContext } from '../interfaces';
 
@@ -88,7 +87,7 @@ export default function BoardCard({
               size="small"
               color="secondary"
               onClick={() =>
-                updateTask(dataGlobal.activeBoard.id, data.id, {
+                appStore.updateTask(dataGlobal.activeBoard.id, data.id, {
                   status: statusByOrder[currentStatus!.order - 1].id,
                 })
               }
@@ -101,7 +100,7 @@ export default function BoardCard({
               size="small"
               color="secondary"
               onClick={() =>
-                updateTask(dataGlobal.activeBoard.id, data.id, {
+                appStore.updateTask(dataGlobal.activeBoard.id, data.id, {
                   status: statusByOrder[currentStatus!.order + 1].id,
                 })
               }
@@ -115,7 +114,7 @@ export default function BoardCard({
           size="small"
           variant="text"
           color="primary"
-          onClick={() => deleteTask(dataGlobal.activeBoard.id, data.id)}
+          onClick={() => appStore.deleteTask(dataGlobal.activeBoard.id, data.id)}
         >
           <DeleteIcon />
         </IconButton>

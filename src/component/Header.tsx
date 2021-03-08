@@ -50,11 +50,11 @@ export default function Header({
     return (
       <AppBar className={classes.headerWrapper} position="static">
         <Toolbar className={classes.headerContent} variant="dense">
-          <div className={ classes.title}>
-            <Typography variant="h6" color="inherit">
+          <div className={ classes.title} data-testid="HeaderTitle">
+            <Typography variant="h6" color="inherit" data-testid="HeaderTitleBoard">
               { `${activeBoard.displayName} board` }
             </Typography>
-            <Typography>
+            <Typography data-testid="HeaderTitleCount">
               &nbsp; with {activeBoard.taskCount || 0} tasks
             </Typography>
           </div>
@@ -66,7 +66,6 @@ export default function Header({
                 variant="standard"
                 className={classes.select}
                 value={activeBoard.id}
-                renderValue={ () => activeBoard.displayName }
                 onChange={
                   (event: ChangeEvent<{ value: unknown }>) => 
                     setActiveBoard(
@@ -74,7 +73,7 @@ export default function Header({
                     )
                 }
               >
-                <option value="" disabled>
+                <option key="disabled" value="" disabled>
                   Pick board
                 </option>
                 { 
